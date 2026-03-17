@@ -1,0 +1,41 @@
+@model InventoryApp.Models.Product
+@{
+    ViewData["Title"] = "Excluir Produto";
+}
+
+<h2>Excluir Produto</h2>
+<hr />
+
+<div class="alert alert-danger">
+    <strong>Atenção!</strong> Tem certeza que deseja excluir o produto abaixo? Esta ação não pode ser desfeita.
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header text-white bg-danger">@Model.Name</div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-5">Nome</dt>
+                    <dd class="col-sm-7">@Model.Name</dd>
+
+                    <dt class="col-sm-5">Categoria</dt>
+                    <dd class="col-sm-7">@Model.Category</dd>
+
+                    <dt class="col-sm-5">Quantidade</dt>
+                    <dd class="col-sm-7">@Model.Quantity @Model.Unit</dd>
+
+                    <dt class="col-sm-5">Data de Validade</dt>
+                    <dd class="col-sm-7">@Model.ExpiryDate.ToString("dd/MM/yyyy")</dd>
+                </dl>
+            </div>
+            <div class="card-footer">
+                <form asp-action="Delete">
+                    <input type="hidden" asp-for="Id" />
+                    <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+                    <a asp-action="Index" class="btn btn-secondary ms-2">Cancelar</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,137 @@
+@model IEnumerable<InventoryApp.Models.Product>
+@{
+    ViewData["Title"] = "Produtos Perecíveis";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>🥦 Controle de Estoque de Produtos Perecíveis</h2>
+    <a asp-action="Create" class="btn btn-success">+ Cadastrar Produto</a>
+</div>
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Success"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Search and Filter -->
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-5">
+        <input type="text" name="searchString" class="form-control" placeholder="Buscar por nome ou categoria..."
+               value="@ViewBag.SearchString" />
+    </div>
+    <div class="col-md-4">
+        <select name="filterStatus" class="form-select">
+            <option value="" selected="@(ViewBag.FilterStatus == null || ViewBag.FilterStatus == "")">Todos os produtos</option>
+            <option value="expiring" selected="@(ViewBag.FilterStatus == "expiring")">Vencendo em breve (≤ 7 dias)</option>
+            <option value="expired" selected="@(ViewBag.FilterStatus == "expired")">Vencidos</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    </div>
+    <div class="col-md-1">
+        <a asp-action="Index" class="btn btn-outline-secondary w-100">✕</a>
+    </div>
+</form>
+
+<!-- Summary cards -->
+@{
+    var allProducts = Model.ToList();
+    var totalProducts = allProducts.Count;
+    var expiredCount = allProducts.Count(p => p.IsExpired);
+    var expiringSoonCount = allProducts.Count(p => p.IsExpiringSoon);
+    var okCount = totalProducts - expiredCount - expiringSoonCount;
+}
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body text-center">
+                <h5 class="card-title">Total</h5>
+                <h2>@totalProducts</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success">
+            <div class="card-body text-center">
+                <h5 class="card-title">✅ Em dia</h5>
+                <h2>@okCount</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body text-center">
+                <h5 class="card-title">⚠️ Vencendo</h5>
+                <h2>@expiringSoonCount</h2>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body text-center">
+                <h5 class="card-title">❌ Vencidos</h5>
+                <h2>@expiredCount</h2>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">Nenhum produto encontrado.</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-hover table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Nome</th>
+                    <th>Categoria</th>
+                    <th>Quantidade</th>
+                    <th>Unidade</th>
+                    <th>Fabricação</th>
+                    <th>Validade</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="@(item.IsExpired ? "table-danger" : item.IsExpiringSoon ? "table-warning" : "")">
+                        <td>@item.Name</td>
+                        <td>@item.Category</td>
+                        <td>@item.Quantity</td>
+                        <td>@item.Unit</td>
+                        <td>@item.ManufactureDate.ToString("dd/MM/yyyy")</td>
+                        <td>@item.ExpiryDate.ToString("dd/MM/yyyy")</td>
+                        <td>
+                            @if (item.IsExpired)
+                            {
+                                <span class="badge bg-danger">❌ Vencido</span>
+                            }
+                            else if (item.IsExpiringSoon)
+                            {
+                                <span class="badge bg-warning text-dark">⚠️ Vence em @item.DaysUntilExpiry dia(s)</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-success">✅ @item.DaysUntilExpiry dias</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalhes</a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Editar</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Excluir</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

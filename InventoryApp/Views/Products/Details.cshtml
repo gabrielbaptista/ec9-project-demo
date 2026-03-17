@@ -1,0 +1,56 @@
+@model InventoryApp.Models.Product
+@{
+    ViewData["Title"] = "Detalhes do Produto";
+}
+
+<h2>Detalhes do Produto</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        @{
+            string badgeClass = Model.IsExpired ? "bg-danger" : Model.IsExpiringSoon ? "bg-warning text-dark" : "bg-success";
+            string statusText = Model.IsExpired
+                ? "❌ Vencido"
+                : Model.IsExpiringSoon
+                    ? $"⚠️ Vence em {Model.DaysUntilExpiry} dia(s)"
+                    : $"✅ {Model.DaysUntilExpiry} dias restantes";
+        }
+
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <strong>@Model.Name</strong>
+                <span class="badge @badgeClass">@statusText</span>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-5">Nome</dt>
+                    <dd class="col-sm-7">@Model.Name</dd>
+
+                    <dt class="col-sm-5">Categoria</dt>
+                    <dd class="col-sm-7">@Model.Category</dd>
+
+                    <dt class="col-sm-5">Quantidade</dt>
+                    <dd class="col-sm-7">@Model.Quantity @Model.Unit</dd>
+
+                    <dt class="col-sm-5">Data de Fabricação</dt>
+                    <dd class="col-sm-7">@Model.ManufactureDate.ToString("dd/MM/yyyy")</dd>
+
+                    <dt class="col-sm-5">Data de Validade</dt>
+                    <dd class="col-sm-7">@Model.ExpiryDate.ToString("dd/MM/yyyy")</dd>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Notes))
+                    {
+                        <dt class="col-sm-5">Observações</dt>
+                        <dd class="col-sm-7">@Model.Notes</dd>
+                    }
+                </dl>
+            </div>
+            <div class="card-footer d-flex gap-2">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+                <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Excluir</a>
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+            </div>
+        </div>
+    </div>
+</div>
