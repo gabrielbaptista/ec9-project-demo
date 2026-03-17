@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro de Usuário</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ── Toast container ─────────────────────── -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- ── Header ──────────────────────────────── -->
+  <header>
+    <svg class="logo-icon" width="28" height="28" viewBox="0 0 24 24" fill="none"
+         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="8" r="4"/>
+      <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+    </svg>
+    <span class="logo">Sistema de Gestão de Usuários</span>
+    <nav>Início &rsaquo; Usuários &rsaquo; Cadastro</nav>
+  </header>
+
+  <!-- ── Main content ─────────────────────────── -->
+  <main>
+    <div class="card">
+      <div class="card-header">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 12c2.7 0 5-2.3 5-5S14.7 2 12 2 7 4.3 7 7s2.3 5 5 5z"/>
+          <path d="M20 21c0-4-3.6-7-8-7s-8 3-8 7"/>
+          <line x1="15" y1="7" x2="19" y2="3"/>
+          <line x1="17" y1="5" x2="21" y2="5"/>
+          <line x1="19" y1="3" x2="19" y2="7"/>
+        </svg>
+        <h1>Cadastro de Usuário</h1>
+      </div>
+
+      <div class="card-body">
+        <form id="userForm" novalidate>
+
+          <!-- ── Section: Dados do Usuário ──────── -->
+          <p class="form-section-title">Dados do Usuário</p>
+
+          <div class="form-grid">
+
+            <!-- Nome do usuário -->
+            <div class="form-group full-width">
+              <label for="userName">
+                Nome do usuário <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="text"
+                id="userName"
+                name="userName"
+                placeholder="Ex.: João da Silva"
+                autocomplete="name"
+                required
+                aria-required="true"
+                aria-describedby="userNameFeedback"
+              />
+              <span class="field-feedback" id="userNameFeedback" role="alert"></span>
+            </div>
+
+            <!-- Login -->
+            <div class="form-group full-width">
+              <label for="userLogin">
+                Login <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="text"
+                id="userLogin"
+                name="userLogin"
+                placeholder="Ex.: joao.silva"
+                autocomplete="username"
+                required
+                aria-required="true"
+                aria-describedby="userLoginFeedback"
+              />
+              <span class="field-feedback" id="userLoginFeedback" role="alert"></span>
+            </div>
+
+            <!-- Senha -->
+            <div class="form-group">
+              <label for="userPassword">
+                Senha <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="password"
+                id="userPassword"
+                name="userPassword"
+                placeholder="Mínimo 8 caracteres"
+                autocomplete="new-password"
+                required
+                aria-required="true"
+                aria-describedby="userPasswordFeedback"
+              />
+              <div class="password-strength-bar" aria-hidden="true">
+                <div class="password-strength-bar-fill" id="strengthFill"></div>
+              </div>
+              <span id="strengthLabel" style="font-size:11px; font-weight:600;"></span>
+              <span class="field-feedback" id="userPasswordFeedback" role="alert"></span>
+            </div>
+
+            <!-- Confirmação de senha -->
+            <div class="form-group">
+              <label for="userConfirmPassword">
+                Confirmação de senha <span class="required" aria-hidden="true">*</span>
+              </label>
+              <input
+                type="password"
+                id="userConfirmPassword"
+                name="userConfirmPassword"
+                placeholder="Repita a senha"
+                autocomplete="new-password"
+                required
+                aria-required="true"
+                aria-describedby="userConfirmPasswordFeedback"
+              />
+              <span class="field-feedback" id="userConfirmPasswordFeedback" role="alert"></span>
+            </div>
+
+            <!-- Perfil -->
+            <div class="form-group full-width">
+              <label for="userProfile">
+                Perfil <span class="required" aria-hidden="true">*</span>
+              </label>
+              <select
+                id="userProfile"
+                name="userProfile"
+                required
+                aria-required="true"
+                aria-describedby="userProfileFeedback"
+              >
+                <option value="">-- Selecione um perfil --</option>
+                <option value="usuario_comum">Usuário Comum</option>
+                <option value="usuario_gerente">Usuário Gerente</option>
+                <option value="administrador">Administrador</option>
+              </select>
+              <span class="field-feedback" id="userProfileFeedback" role="alert"></span>
+            </div>
+
+          </div><!-- /.form-grid -->
+
+          <hr class="divider" />
+
+          <!-- ── Section: Histórico de Modificações ── -->
+          <p class="form-section-title">Histórico de Modificações</p>
+
+          <div class="history-section">
+            <p class="history-empty" id="historyEmpty">
+              Nenhuma modificação registrada.
+            </p>
+            <table class="history-table hidden" id="historyTable" aria-label="Histórico de modificações">
+              <thead>
+                <tr>
+                  <th>Data / Hora</th>
+                  <th>Responsável</th>
+                  <th>Tipo</th>
+                  <th>Descrição</th>
+                </tr>
+              </thead>
+              <tbody id="historyBody"></tbody>
+            </table>
+          </div>
+
+          <!-- ── Actions ───────────────────────── -->
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="btnCancel">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none"
+                   stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <line x1="4" y1="4" x2="16" y2="16"/>
+                <line x1="16" y1="4" x2="4" y2="16"/>
+              </svg>
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <svg width="15" height="15" viewBox="0 0 20 20" fill="none"
+                   stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+                <polyline points="4 10 8 14 16 6"/>
+              </svg>
+              Salvar
+            </button>
+          </div>
+
+        </form>
+      </div><!-- /.card-body -->
+    </div><!-- /.card -->
+  </main>
+
+  <!-- ── Footer ────────────────────────────────── -->
+  <footer>
+    &copy; 2024 Sistema de Gestão de Usuários &mdash; Todos os direitos reservados.
+  </footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>
